@@ -11,24 +11,25 @@ import string
 import nltk
 nltk.download('stopwords')
 nltk.download('punkt')
+nltk.download('punkt_tab')
+
+
+ps = PorterStemmer()
+stop_words = set(stopwords.words('english'))
 
 def transform_text(text):
     """
     Transforms the input text by converting it to lowercase, tokenizing, removing stopwords and punctuation, and stemming.
     """
-    ps = PorterStemmer()
     # Convert to lowercase
-    text = text.lower()
+    text = str(text).lower()
     # Tokenize the text
     text = nltk.word_tokenize(text)
-    # Remove non-alphanumeric tokens
-    text = [word for word in text if word.isalnum()]
-    # Remove stopwords and punctuation
-    text = [word for word in text if word not in stopwords.words('english') and word not in string.punctuation]
-    # Stem the words
-    text = [ps.stem(word) for word in text]
+    # Remove non-alphanumeric tokens, stopwords, and punctuation, then stem
+    text = [ps.stem(word) for word in text if word.isalnum() and word not in stop_words and word not in string.punctuation]
     # Join the tokens back into a single string
     return " ".join(text)
+
 
 def preprocess_df(df, text_column='text', target_column='target'):
 
